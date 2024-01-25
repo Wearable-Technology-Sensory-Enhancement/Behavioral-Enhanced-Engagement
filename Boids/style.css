@@ -1,0 +1,38 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0; /* Feel free to choose your own color */
+}
+
+#app {
+    text-align: center;
+}
+
+#boidsCanvas {
+    border: 1px solid black; /* To visually distinguish the canvas area */
+    background-color: #fff;
+    width: 100vw;
+    height: 90vh;
+}
+
+#controls {
+    margin-top: 20px;
+}
+
+button {
+    margin: 0 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
