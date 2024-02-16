@@ -10,7 +10,7 @@
 import { Boid } from './modules/boid.js';
 import { drawTongueTracker } from './modules/tongueTracker.js';
 import { canvas, ctx } from './modules/canvasSetup.js';
-import { MouseAttraction } from './modules/userInteraction.js';
+import { MouseAttraction, Paint } from './modules/userInteraction.js';
 
 //Spawning Boids
 let boids = [];
@@ -19,8 +19,11 @@ for (let i = 0; i < 100; i++) {
     boids.push(new Boid(Math.random() * canvas.width, Math.random() * canvas.height, `hsl(${Math.random() * 360}, 100%, 50%)`))
 }   
 
-//Creating MouseAttraction Class
+//Creating MouseAttraction Instance
 const mouseAttraction = new MouseAttraction();
+
+//Creating Paint Instance
+const paint = new Paint();
 
 //Animation
 function animate() {
@@ -30,9 +33,11 @@ function animate() {
     drawTongueTracker();
 
     const mousePosition = mouseAttraction.getMousePosition();
+    const isPaintingEnabled = paint.getIsPaintEnabled();
+
 
     boids.forEach(boid => {
-        boid.update(boids, mousePosition); 
+        boid.update(boids, mousePosition, isPaintingEnabled); 
         boid.draw();
     });
 }

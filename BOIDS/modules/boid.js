@@ -47,33 +47,21 @@ export class Boid {
         ctx.closePath(); // Closes the path so the last line is drawn back to the starting point
     
         ctx.fill();
+
+        
     }
 
-    //Updates the boids position and movement
-    update(boids) {
-        this.alignment(boids);
-        this.cohesion(boids);
-        this.separation(boids);
-
-        this.limitVelocity();
-
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-
-        //Boundaries
-        if (this.position.x > canvas.width) this.position.x = 0;
-        if (this.position.x < 0) this.position.x = canvas.width;
-        if (this.position.y > canvas.height) this.position.y = 0;
-        if (this.position.y < 0) this.position.y = canvas.height;
-    }
-
-    update(boids, mousePosition) {
+    update(boids, mousePosition, isPaintingEnabled) {
         this.alignment(boids);
         this.cohesion(boids);
         this.separation(boids);
 
         if (mousePosition) {
             this.attract(mousePosition);
+        }
+
+        if (isPaintingEnabled && this.isOverTongueTracker()) {
+            this.paint(); 
         }
 
         this.limitVelocity();
@@ -173,6 +161,20 @@ export class Boid {
         // Apply a gentle pull towards the mouse
         this.velocity.x += directionToMouse.x * attractStrength;
         this.velocity.y += directionToMouse.y * attractStrength;
+    }
+
+    isOverTongueTracker() {
+        const trackerBounds = { x: centerX - squareSize / 2, y: centerY - squareSize / 2, width: squareSize, height: squareSize };
+        return this.position.x >= trackerBounds.x && this.position.x <= trackerBounds.x + trackerBounds.width &&
+               this.position.y >= trackerBounds.y && this.position.y <= trackerBounds.y + trackerBounds.height;
+    }
+
+    paint() {
+        // Logic to leave a mark on the canvas at the boid's current position
+        ctx.beginPath();
+        ctx.arc(this.position.x, this.position.y, 3, 0, Math.PI * 2); // Small dot
+        ctx.fillStyle = this.color; // Use the boid's color
+        ctx.fill();
     }
 
     // Add a method to limit the velocity

@@ -19,3 +19,17 @@ export class MouseAttraction {
         return this.isAttractedToMouse ? this.mousePosition : null;
     }
 }
+
+export class Paint {
+    constructor() {
+        this.isPaintEnabled = false;
+
+        document.getElementById('paint').addEventListener('click', () => {
+            this.isPaintEnabled = !this.isPaintEnabled;
+        });
+    }
+
+    getIsPaintEnabled() {
+        return this.isPaintEnabled;
+    }
+}
