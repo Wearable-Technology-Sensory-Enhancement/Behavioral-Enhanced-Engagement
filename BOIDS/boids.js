@@ -13,6 +13,7 @@ function drawTongueTracker() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
+    //Drawing for square
     ctx.beginPath();
     ctx.rect(centerX - squareSize / 2, centerY - squareSize / 2, squareSize, squareSize);
     ctx.strokeStyle = 'black';
@@ -20,6 +21,7 @@ function drawTongueTracker() {
     ctx.fillStyle = 'green';
     ctx.fill();
 
+    //Drawing for rectangle
     ctx.beginPath();
     ctx.rect(centerX - rectangleWidth / 2, centerY - squareSize / 2 - rectangleHeight, rectangleWidth, rectangleHeight);
     // ctx.strokeStyle = 'black';
@@ -97,7 +99,7 @@ class Boid {
         if (total > 0) {
             steering.x /= total;
             steering.y /= total;
-            // This is a simple form of steering towards the average - you might want to limit the force applied
+            // Simple form of steering towards the average - limit forced applied if neccessary
             this.velocity.x += steering.x - this.velocity.x;
             this.velocity.y += steering.y - this.velocity.y;
         }
@@ -119,7 +121,7 @@ class Boid {
         if (total > 0) {
             centerMass.x /= total;
             centerMass.y /= total;
-            // Move towards the center mass - this is a simple form, you might want to limit the force applied
+            // Move towards the center mass - simple form, limit forced applied as neccessary
             this.velocity.x += (centerMass.x - this.position.x) / 100; // Adjust this divisor as needed
             this.velocity.y += (centerMass.y - this.position.y) / 100; // Adjust this divisor as needed
         }
@@ -141,7 +143,7 @@ class Boid {
         if (total > 0) {
             avoidance.x /= total;
             avoidance.y /= total;
-            // Apply the avoidance - this is a simple form, you might want to limit the force applied
+            // Apply the avoidance - simple, limit forced applied as neccessary
             this.velocity.x += avoidance.x;
             this.velocity.y += avoidance.y;
         }
@@ -178,5 +180,6 @@ function animate() {
     });
 }
 
+//Animation Loop
 drawTongueTracker();
 animate();
