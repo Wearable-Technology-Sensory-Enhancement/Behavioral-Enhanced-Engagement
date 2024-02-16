@@ -63,6 +63,12 @@ class Boid {
 
     //Updates the boids position and movement
     update() {
+        this.alignment(boids);
+        this.cohesion(boids);
+        this.separation(boids);
+
+        this.limitVelocity();
+
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
 
@@ -77,17 +83,78 @@ class Boid {
 
     //Boids try to match their velocity with nearby boids
     alignment(boids) {
-
+        let perceptionRadius = 50;
+        let steering = { x: 0, y: 0 };
+        let total = 0;
+        for (let other of boids) {
+            let d = Math.hypot(other.position.x - this.position.x, other.position.y - this.position.y);
+            if (other !== this && d < perceptionRadius) {
+                steering.x += other.velocity.x;
+                steering.y += other.velocity.y;
+                total++;
+            }
+        }
+        if (total > 0) {
+            steering.x /= total;
+            steering.y /= total;
+            // This is a simple form of steering towards the average - you might want to limit the force applied
+            this.velocity.x += steering.x - this.velocity.x;
+            this.velocity.y += steering.y - this.velocity.y;
+        }
     }
 
     //Boids move towards the average position of nearby boids, creating unified groups
     cohesion(boids) {
-
+        let perceptionRadius = 50;
+        let centerMass = { x: 0, y: 0 };
+        let total = 0;
+        for (let other of boids) {
+            let d = Math.hypot(other.position.x - this.position.x, other.position.y - this.position.y);
+            if (other !== this && d < perceptionRadius) {
+                centerMass.x += other.position.x;
+                centerMass.y += other.position.y;
+                total++;
+            }
+        }
+        if (total > 0) {
+            centerMass.x /= total;
+            centerMass.y /= total;
+            // Move towards the center mass - this is a simple form, you might want to limit the force applied
+            this.velocity.x += (centerMass.x - this.position.x) / 100; // Adjust this divisor as needed
+            this.velocity.y += (centerMass.y - this.position.y) / 100; // Adjust this divisor as needed
+        }
     }
 
     //Boids avoid getting too close to each other, preventing crowding
     separation(boids) {
+        let perceptionRadius = 25;
+        let avoidance = { x: 0, y: 0 };
+        let total = 0;
+        for (let other of boids) {
+            let d = Math.hypot(other.position.x - this.position.x, other.position.y - this.position.y);
+            if (other !== this && d < perceptionRadius) {
+                avoidance.x += (this.position.x - other.position.x) / d;
+                avoidance.y += (this.position.y - other.position.y) / d;
+                total++;
+            }
+        }
+        if (total > 0) {
+            avoidance.x /= total;
+            avoidance.y /= total;
+            // Apply the avoidance - this is a simple form, you might want to limit the force applied
+            this.velocity.x += avoidance.x;
+            this.velocity.y += avoidance.y;
+        }
+    }
 
+    // Add a method to limit the velocity
+    limitVelocity() {
+        const maxSpeed = 2.5; // Maximum speed
+        const speed = Math.hypot(this.velocity.x, this.velocity.y);
+        if (speed > maxSpeed) {
+            this.velocity.x = (this.velocity.x / speed) * maxSpeed;
+            this.velocity.y = (this.velocity.y / speed) * maxSpeed;
+        }
     }
 }
 
