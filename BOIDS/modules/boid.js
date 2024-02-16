@@ -170,11 +170,8 @@ export class Boid {
     }
 
     paint() {
-        // Logic to leave a mark on the canvas at the boid's current position
-        ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, 3, 0, Math.PI * 2); // Small dot
-        ctx.fillStyle = this.color; // Use the boid's color
-        ctx.fill();
+        // Add the current position and color to the paintMarks array
+        paintMarks.push({ x: this.position.x, y: this.position.y, color: this.color });
     }
 
     // Add a method to limit the velocity

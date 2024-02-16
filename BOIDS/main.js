@@ -25,17 +25,26 @@ const mouseAttraction = new MouseAttraction();
 //Creating Paint Instance
 const paint = new Paint();
 
+let paintMarks = [];
+
 //Animation
 function animate() {
     requestAnimationFrame(animate);
+
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
-    drawTongueTracker();
+    // Draw all paint marks
+    paintMarks.forEach(mark => {
+        ctx.beginPath();
+        ctx.arc(mark.x, mark.y, 3, 0, Math.PI * 2); // Small dot
+        ctx.fillStyle = mark.color; // Use the stored color
+        ctx.fill();
+    });
 
     const mousePosition = mouseAttraction.getMousePosition();
     const isPaintingEnabled = paint.getIsPaintEnabled();
 
-
+    drawTongueTracker();
     boids.forEach(boid => {
         boid.update(boids, mousePosition, isPaintingEnabled); 
         boid.draw();
