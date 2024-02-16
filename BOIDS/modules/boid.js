@@ -1,37 +1,23 @@
-//Initializing Canvas
-const canvas = document.getElementById('boidsCanvas')
-const ctx = canvas.getContext('2d')
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight * 0.9
+/**
+ * File: boid.js
+ * Description: Defines the Boid class. The Boid class defines unique qualities for each boid, which are position, velocity, and color.
+ * The Boid class also contains the 3 behaviors that each boid follows, which are alignment, cohesion, and seperation.
+ * Alignment: Boids try to match velocity with nearby boids
+ * Cohesion: Boids try to match the center/average position of nearby boids, creating flocks
+ * Seperation: Boids avoid getting to close with each other, preventing overcrowding
+ * Code Inspiration from: https://people.ece.cornell.edu/land/courses/ece4760/labs/s2021/Boids/Boids.html#:~:text=Boids%20is%20an%20artificial%20life,very%20simple%20set%20of%20rules.
+ * Author: Tam Le
+ * Created on: 02/16/2024
+ * 
+ * Dependencies: canvasSetup.js to access canvas content
+ * Usage: Used by main.js for the main animation loop
+ */
 
-//Tongue Tracker Device
-function drawTongueTracker() {
-    const squareSize = 175;
-    const rectangleWidth = 90;
-    const rectangleHeight = 40;
-
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-
-    //Drawing for square
-    ctx.beginPath();
-    ctx.rect(centerX - squareSize / 2, centerY - squareSize / 2, squareSize, squareSize);
-    ctx.strokeStyle = 'black';
-    ctx.stroke();
-    ctx.fillStyle = 'green';
-    ctx.fill();
-
-    //Drawing for rectangle
-    ctx.beginPath();
-    ctx.rect(centerX - rectangleWidth / 2, centerY - squareSize / 2 - rectangleHeight, rectangleWidth, rectangleHeight);
-    // ctx.strokeStyle = 'black';
-    // ctx.stroke();
-    ctx.fillStyle = 'green';
-    ctx.fill();
-}
+//Imports
+import { canvas, ctx } from './canvasSetup.js';
 
 //Boids
-class Boid {
+export class Boid {
     constructor(x, y, color) {
         this.position = {x: x, y: y};
         this.velocity = { x: Math.random() * 2 - 1, y: Math.random() * 2 - 1};
@@ -64,7 +50,24 @@ class Boid {
     }
 
     //Updates the boids position and movement
-    update() {
+    update(boids) {
+        this.alignment(boids);
+        this.cohesion(boids);
+        this.separation(boids);
+
+        this.limitVelocity();
+
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
+
+        //Boundaries
+        if (this.position.x > canvas.width) this.position.x = 0;
+        if (this.position.x < 0) this.position.x = canvas.width;
+        if (this.position.y > canvas.height) this.position.y = 0;
+        if (this.position.y < 0) this.position.y = canvas.height;
+    }
+
+    update(boids) {
         this.alignment(boids);
         this.cohesion(boids);
         this.separation(boids);
@@ -159,27 +162,3 @@ class Boid {
         }
     }
 }
-
-//Spawning Boids
-let boids = [];
-
-for (let i = 0; i < 100; i++) {
-    boids.push(new Boid(Math.random() * canvas.width, Math.random() * canvas.height, `hsl(${Math.random() * 360}, 100%, 50%)`))
-}
-
-//Animation
-function animate() {
-    requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-
-    drawTongueTracker();
-
-    boids.forEach(boid => {
-        boid.update();
-        boid.draw();
-    });
-}
-
-//Animation Loop
-drawTongueTracker();
-animate();
