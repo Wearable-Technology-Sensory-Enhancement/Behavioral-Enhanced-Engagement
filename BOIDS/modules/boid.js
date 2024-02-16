@@ -152,6 +152,16 @@ export class Boid {
         }
     }
 
+    //For mouse attraction
+    attract(targetPosition) {
+        if (!targetPosition) return;
+    
+        // Simple attraction logic - adjust as necessary
+        const attractStrength = 0.7;
+        this.velocity.x += (targetPosition.x - this.position.x) * attractStrength;
+        this.velocity.y += (targetPosition.y - this.position.y) * attractStrength;
+    }
+
     // Add a method to limit the velocity
     limitVelocity() {
         const maxSpeed = 2.5; // Maximum speed
