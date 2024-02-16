@@ -67,10 +67,14 @@ export class Boid {
         if (this.position.y < 0) this.position.y = canvas.height;
     }
 
-    update(boids) {
+    update(boids, mousePosition) {
         this.alignment(boids);
         this.cohesion(boids);
         this.separation(boids);
+
+        if (mousePosition) {
+            this.attract(mousePosition);
+        }
 
         this.limitVelocity();
 
@@ -154,12 +158,21 @@ export class Boid {
 
     //For mouse attraction
     attract(targetPosition) {
-        if (!targetPosition) return;
+        const distance = Math.hypot(targetPosition.x - this.position.x, targetPosition.y - this.position.y);
+        if (!targetPosition || distance < 10) return; // Ignore if too close or no targetPosition
     
-        // Simple attraction logic - adjust as necessary
-        const attractStrength = 0.7;
-        this.velocity.x += (targetPosition.x - this.position.x) * attractStrength;
-        this.velocity.y += (targetPosition.y - this.position.y) * attractStrength;
+        // Adjust the strength of the attraction based on the distance
+        const attractStrength = Math.min(0.5, 1000 / Math.pow(distance, 2));
+    
+        // Calculate the direction vector from the boid to the mouse
+        const directionToMouse = {
+            x: (targetPosition.x - this.position.x) / distance,
+            y: (targetPosition.y - this.position.y) / distance,
+        };
+    
+        // Apply a gentle pull towards the mouse
+        this.velocity.x += directionToMouse.x * attractStrength;
+        this.velocity.y += directionToMouse.y * attractStrength;
     }
 
     // Add a method to limit the velocity

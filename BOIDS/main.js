@@ -32,10 +32,7 @@ function animate() {
     const mousePosition = mouseAttraction.getMousePosition();
 
     boids.forEach(boid => {
-        if (mousePosition) {
-            boid.attract(mousePosition);
-        }
-        boid.update(boids);
+        boid.update(boids, mousePosition); 
         boid.draw();
     });
 }
