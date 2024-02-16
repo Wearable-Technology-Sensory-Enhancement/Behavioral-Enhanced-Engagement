@@ -49,24 +49,6 @@ export class Boid {
         ctx.fill();
     }
 
-    //Updates the boids position and movement
-    update(boids) {
-        this.alignment(boids);
-        this.cohesion(boids);
-        this.separation(boids);
-
-        this.limitVelocity();
-
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-
-        //Boundaries
-        if (this.position.x > canvas.width) this.position.x = 0;
-        if (this.position.x < 0) this.position.x = canvas.width;
-        if (this.position.y > canvas.height) this.position.y = 0;
-        if (this.position.y < 0) this.position.y = canvas.height;
-    }
-
     update(boids, mousePosition) {
         this.alignment(boids);
         this.cohesion(boids);
