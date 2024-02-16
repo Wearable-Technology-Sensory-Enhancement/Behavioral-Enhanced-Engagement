@@ -4,6 +4,30 @@ const ctx = canvas.getContext('2d')
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.9
 
+//Tongue Tracker Device
+function drawTongueTracker() {
+    const squareSize = 175;
+    const rectangleWidth = 90;
+    const rectangleHeight = 40;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    ctx.beginPath();
+    ctx.rect(centerX - squareSize / 2, centerY - squareSize / 2, squareSize, squareSize);
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+    ctx.fillStyle = 'green';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.rect(centerX - rectangleWidth / 2, centerY - squareSize / 2 - rectangleHeight, rectangleWidth, rectangleHeight);
+    // ctx.strokeStyle = 'black';
+    // ctx.stroke();
+    ctx.fillStyle = 'green';
+    ctx.fill();
+}
+
 //Boids
 class Boid {
     constructor(x, y, color) {
@@ -48,6 +72,23 @@ class Boid {
         if (this.position.y > canvas.height) this.position.y = 0;
         if (this.position.y < 0) this.position.y = canvas.height;
     }
+
+    //Boid Behaviors
+
+    //Boids try to match their velocity with nearby boids
+    alignment(boids) {
+
+    }
+
+    //Boids move towards the average position of nearby boids, creating unified groups
+    cohesion(boids) {
+
+    }
+
+    //Boids avoid getting too close to each other, preventing crowding
+    separation(boids) {
+
+    }
 }
 
 //Spawning Boids
@@ -57,14 +98,18 @@ for (let i = 0; i < 100; i++) {
     boids.push(new Boid(Math.random() * canvas.width, Math.random() * canvas.height, `hsl(${Math.random() * 360}, 100%, 50%)`))
 }
 
-
 //Animation
 function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+    drawTongueTracker();
+
     boids.forEach(boid => {
         boid.update();
         boid.draw();
     });
 }
+
+drawTongueTracker();
 animate();
