@@ -13,9 +13,9 @@ import { canvas, ctx } from './canvasSetup.js';
 
 //Tongue Tracker Device
 export function drawTongueTracker() {
-    const squareSize = 175;
-    const rectangleWidth = 90;
-    const rectangleHeight = 40;
+    const squareSize = 270;
+    const rectangleWidth = 170;
+    const rectangleHeight = 50;
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
@@ -31,8 +31,8 @@ export function drawTongueTracker() {
     //Drawing for rectangle
     ctx.beginPath();
     ctx.rect(centerX - rectangleWidth / 2, centerY - squareSize / 2 - rectangleHeight, rectangleWidth, rectangleHeight);
-    // ctx.strokeStyle = 'black';
-    // ctx.stroke();
+    ctx.strokeStyle = 'green';
+    ctx.stroke();
     ctx.fillStyle = 'green';
     ctx.fill();
 }
