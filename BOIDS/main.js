@@ -10,7 +10,7 @@
 import { Boid } from './modules/boid.js';
 import { drawTongueTracker } from './modules/tongueTracker.js';
 import { canvas, ctx } from './modules/canvasSetup.js';
-import { MouseAttraction } from './modules/userInteraction.js';
+import { MouseAttraction, DrawLine } from './modules/userInteraction.js';
 
 //Spawning Boids
 let boids = [];
@@ -22,6 +22,9 @@ for (let i = 0; i < 100; i++) {
 //Creating MouseAttraction Class
 const mouseAttraction = new MouseAttraction();
 
+//Creating DrawLine class
+const drawLine = new DrawLine();
+
 //Animation
 function animate() {
     requestAnimationFrame(animate);
@@ -31,7 +34,17 @@ function animate() {
 
     const mousePosition = mouseAttraction.getMousePosition();
 
+    const linePoints = drawLine.getLinePoints();
+
+    drawLine.redrawLine(); // Ensure the line is redrawn each frame
+
+
     boids.forEach(boid => {
+        //For following line logic
+        if (linePoints.length > 0) {
+            boid.attract(linePoints[0]); // Simple example, replace with more complex logic later
+        }
+
         boid.update(boids, mousePosition); 
         boid.draw();
     });

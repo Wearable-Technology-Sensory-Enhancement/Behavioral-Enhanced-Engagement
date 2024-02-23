@@ -1,4 +1,4 @@
-import { canvas } from './canvasSetup.js';
+import { canvas, ctx } from './canvasSetup.js';
 
 export class MouseAttraction {
     constructor() {
