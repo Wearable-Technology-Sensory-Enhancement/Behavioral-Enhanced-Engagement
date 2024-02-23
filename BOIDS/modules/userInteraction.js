@@ -80,6 +80,4 @@ export class DrawLine {
             ctx.stroke();
         }
     }
-    
-
 }
