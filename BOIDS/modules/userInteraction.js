@@ -67,4 +67,19 @@ export class DrawLine {
         return this.enableDrawing ? this.linePoints : [];
     }
 
+    //Since the canvas is clearing every frame, we need to make sure the line stays
+    redrawLine() {
+        if (this.linePoints.length > 0) {
+            ctx.beginPath();
+            ctx.moveTo(this.linePoints[0].x, this.linePoints[0].y);
+            for (let i = 1; i < this.linePoints.length; i++) {
+                ctx.lineTo(this.linePoints[i].x, this.linePoints[i].y);
+            }
+            ctx.strokeStyle = 'black'; // Or any color of your choice
+            ctx.lineWidth = 2; // Or any thickness you prefer
+            ctx.stroke();
+        }
+    }
+    
+
 }
