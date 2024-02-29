@@ -14,7 +14,7 @@ import { canvas, ctx } from './modules/canvasSetup.js';
 //Spawning Boids
 let boids = [];
 
-for (let i = 0; i < 5; i++) {
+for (let i = 0; i <= 5; i++) {
     boids.push(new Boid(Math.random() * canvas.width, Math.random() * canvas.height, `hsl(${Math.random() * 360}, 100%, 50%)`))
 }   
 
