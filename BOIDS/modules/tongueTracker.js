@@ -13,9 +13,9 @@ import { canvas, ctx } from './canvasSetup.js';
 
 //Tongue Tracker Device
 export function drawTongueTracker() {
-    const squareSize = 270;
-    const rectangleWidth = 170;
-    const rectangleHeight = 50;
+    const squareSize = 450;
+    const rectangleWidth = 230;
+    const rectangleHeight = 80;
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
