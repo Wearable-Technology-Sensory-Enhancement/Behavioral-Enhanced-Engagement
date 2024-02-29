@@ -50,28 +50,13 @@ export class Boid {
         ctx.fill();
     }
 
-    //Updates the boids position and movement
     update(boids) {
-        this.alignment(boids);
-        this.cohesion(boids);
-        this.separation(boids);
+        //Commenting these out since we are working on new feature
+        // this.alignment(boids);
+        // this.cohesion(boids);
+        // this.separation(boids);
 
-        this.limitVelocity();
-
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-
-        //Boundaries
-        if (this.position.x > canvas.width) this.position.x = 0;
-        if (this.position.x < 0) this.position.x = canvas.width;
-        if (this.position.y > canvas.height) this.position.y = 0;
-        if (this.position.y < 0) this.position.y = canvas.height;
-    }
-
-    update(boids) {
-        this.alignment(boids);
-        this.cohesion(boids);
-        this.separation(boids);
+        this.wander()
 
         this.limitVelocity();
 
@@ -111,7 +96,17 @@ export class Boid {
     }
 
     //Boid Behaviors
+    wander() {
+        const wanderStrength = 0.1;
+        this.velocity.x += (Math.random() - 0.5) * wanderStrength;
+        this.velocity.y += (Math.random() - 0.5) * wanderStrength;
+    }
 
+    mimicCursor(cursorVelocity) {
+        // Placeholder: adjust the boid's velocity to match the cursor's velocity
+        // This will be further refined to include checks for cursor speed and direction
+    }
+    
     //Boids try to match their velocity with nearby boids
     alignment(boids) {
         let perceptionRadius = 50;
@@ -180,7 +175,7 @@ export class Boid {
 
     // Add a method to limit the velocity
     limitVelocity() {
-        const maxSpeed = 2.5; // Maximum speed
+        const maxSpeed = 3.5; // Maximum speed
         const speed = Math.hypot(this.velocity.x, this.velocity.y);
         if (speed > maxSpeed) {
             this.velocity.x = (this.velocity.x / speed) * maxSpeed;
