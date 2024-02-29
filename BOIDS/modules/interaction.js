@@ -1,4 +1,5 @@
 import { boundaries } from './tongueTracker.js';
+import { canvas } from './canvasSetup.js';
 
 export class CursorInteraction {
     constructor() {

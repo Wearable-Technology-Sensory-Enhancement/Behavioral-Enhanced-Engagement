@@ -16,6 +16,7 @@
 //Imports
 import { canvas, ctx } from './canvasSetup.js';
 import { boundaries } from './tongueTracker.js';
+// import {  } from './interaction.js'
 
 //Boids
 export class Boid {
@@ -50,22 +51,29 @@ export class Boid {
         ctx.fill();
     }
 
-    update(boids) {
+    update(isMouseDown, cursorVelocity) {
         //Commenting these out since we are working on new feature
         // this.alignment(boids);
         // this.cohesion(boids);
         // this.separation(boids);
 
-        this.wander()
+        if (isMouseDown) {
+            this.mimicCursor(cursorVelocity);
+        } else {
+            this.wander();
+        }
 
         this.limitVelocity();
+        this.checkBounds();
 
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+    }
 
-        //Boundaries of the tongue tracker
+    //Boids stay inside the tongue device
+    checkBounds() {
+        // Boundaries of the tongue tracker
         if (this.position.y < boundaries.rectangle.bottom) {
-            // If the boid is within the vertical range of the rectangle...
             if (this.position.x < boundaries.rectangle.left) {
                 this.position.x = boundaries.rectangle.left; // Use rectangle's left boundary
                 this.velocity.x *= -1;
@@ -74,7 +82,6 @@ export class Boid {
                 this.velocity.x *= -1;
             }
         } else {
-            // Elsewhere, use the square's boundaries
             if (this.position.x < boundaries.square.left) {
                 this.position.x = boundaries.square.left;
                 this.velocity.x *= -1;
@@ -83,8 +90,7 @@ export class Boid {
                 this.velocity.x *= -1;
             }
         }
-
-        // Vertical boundary checks remain the same
+    
         if (this.position.y < boundaries.rectangle.top) {
             this.position.y = boundaries.rectangle.top;
             this.velocity.y *= -1;
@@ -92,8 +98,8 @@ export class Boid {
             this.position.y = boundaries.square.bottom;
             this.velocity.y *= -1;
         }
-
     }
+    
 
     //Boid Behaviors
     wander() {
@@ -103,9 +109,41 @@ export class Boid {
     }
 
     mimicCursor(cursorVelocity) {
-        // Placeholder: adjust the boid's velocity to match the cursor's velocity
-        // This will be further refined to include checks for cursor speed and direction
+        // Check if the cursor is moving significantly
+        const cursorSpeed = Math.hypot(cursorVelocity.x, cursorVelocity.y);
+        const minSpeedThreshold = 0.1; // Define a threshold for what you consider "significant movement"
+    
+        if (cursorSpeed > minSpeedThreshold) {
+            // If the cursor is moving, adjust the boid's velocity to match the cursor's
+            this.velocity.x = cursorVelocity.x;
+            this.velocity.y = cursorVelocity.y;
+        } else {
+            // If the cursor is still or moving slowly, orbit around the cursor's position
+            this.orbit(cursorVelocity);
+        }
     }
+
+    //TODO: Needs more work
+    orbit(cursorVelocity) {
+        // This is a simple orbital movement that doesn't depend on the cursor's position
+        // For actual orbiting around the cursor, additional calculations are needed
+    
+        // Increase or decrease these to adjust the radius and speed of orbiting
+        const radius = 20;
+        const orbitSpeed = 0.05;
+    
+        // Calculate a simple circular orbit
+        this.velocity.x = Math.cos(this.angle) * orbitSpeed;
+        this.velocity.y = Math.sin(this.angle) * orbitSpeed;
+    
+        // Update the angle for the next frame
+        this.angle += orbitSpeed;
+    
+        // This is just a basic implementation. To orbit around the cursor,
+        // you would adjust the boid's position relative to the cursor's position
+    }
+    
+    
     
     //Boids try to match their velocity with nearby boids
     alignment(boids) {
