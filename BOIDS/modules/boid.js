@@ -9,12 +9,13 @@
  * Author: Tam Le
  * Created on: 02/16/2024
  * 
- * Dependencies: canvasSetup.js to access canvas content
+ * Dependencies: canvasSetup.js to access canvas content, bounadries from tongueTracker.js for the device boundaries
  * Usage: Used by main.js for the main animation loop
  */
 
 //Imports
 import { canvas, ctx } from './canvasSetup.js';
+import { boundaries } from './tongueTracker.js';
 
 //Boids
 export class Boid {
@@ -77,11 +78,36 @@ export class Boid {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
 
-        //Boundaries
-        if (this.position.x > canvas.width) this.position.x = 0;
-        if (this.position.x < 0) this.position.x = canvas.width;
-        if (this.position.y > canvas.height) this.position.y = 0;
-        if (this.position.y < 0) this.position.y = canvas.height;
+        //Boundaries of the tongue tracker
+        if (this.position.y < boundaries.rectangle.bottom) {
+            // If the boid is within the vertical range of the rectangle...
+            if (this.position.x < boundaries.rectangle.left) {
+                this.position.x = boundaries.rectangle.left; // Use rectangle's left boundary
+                this.velocity.x *= -1;
+            } else if (this.position.x > boundaries.rectangle.right) {
+                this.position.x = boundaries.rectangle.right; // Use rectangle's right boundary
+                this.velocity.x *= -1;
+            }
+        } else {
+            // Elsewhere, use the square's boundaries
+            if (this.position.x < boundaries.square.left) {
+                this.position.x = boundaries.square.left;
+                this.velocity.x *= -1;
+            } else if (this.position.x > boundaries.square.right) {
+                this.position.x = boundaries.square.right;
+                this.velocity.x *= -1;
+            }
+        }
+
+        // Vertical boundary checks remain the same
+        if (this.position.y < boundaries.rectangle.top) {
+            this.position.y = boundaries.rectangle.top;
+            this.velocity.y *= -1;
+        } else if (this.position.y > boundaries.square.bottom) {
+            this.position.y = boundaries.square.bottom;
+            this.velocity.y *= -1;
+        }
+
     }
 
     //Boid Behaviors
