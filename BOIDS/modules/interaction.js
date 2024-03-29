@@ -46,4 +46,10 @@ export class CursorInteraction {
     getVelocity() {
         return this.isDown ? this.velocity : { x: 0, y: 0 };
     }
+
+    
+    getPosition() {
+        return this.position;
+    }
+
 }

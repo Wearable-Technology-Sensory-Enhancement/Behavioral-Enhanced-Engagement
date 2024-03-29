@@ -31,9 +31,10 @@ function animate() {
     // Retrieve the current cursor state and velocity from cursorInteraction
     const isMouseDown = cursorInteraction.isDown;
     const cursorVelocity = cursorInteraction.getVelocity();
+    const cursorPosition = cursorInteraction.getPosition();
 
     boids.forEach(boid => {
-        boid.update(isMouseDown, cursorVelocity);
+        boid.update(isMouseDown, cursorPosition, cursorVelocity);
         boid.draw();
     });
 }

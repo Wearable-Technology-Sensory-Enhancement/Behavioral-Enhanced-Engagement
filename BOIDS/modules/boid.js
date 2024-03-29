@@ -16,7 +16,7 @@
 //Imports
 import { canvas, ctx } from './canvasSetup.js';
 import { boundaries } from './tongueTracker.js';
-// import {  } from './interaction.js'
+// import { cursorPosition } from './interaction.js';
 
 //Boids
 export class Boid {
@@ -24,6 +24,10 @@ export class Boid {
         this.position = {x: x, y: y};
         this.velocity = { x: Math.random() * 2 - 1, y: Math.random() * 2 - 1};
         this.color = color;
+
+        // Assign one of three possible orbit distances
+        const orbitDistances = [15, 25, 40]; 
+        this.orbitDistance = orbitDistances[Math.floor(Math.random() * orbitDistances.length)];
     }
 
     //Draws the individual boid
@@ -51,7 +55,7 @@ export class Boid {
         ctx.fill();
     }
 
-    update(isMouseDown, cursorVelocity) {
+    update(isMouseDown, cursorPosition, cursorVelocity) {
         //Commenting these out since we are working on new feature
         // this.alignment(boids);
         // this.cohesion(boids);
@@ -59,6 +63,7 @@ export class Boid {
 
         if (isMouseDown) {
             this.mimicCursor(cursorVelocity);
+            this.orbit(cursorPosition);
         } else {
             this.wander();
         }
@@ -123,24 +128,42 @@ export class Boid {
         }
     }
 
-    //TODO: Needs more work
-    orbit(cursorVelocity) {
-        // This is a simple orbital movement that doesn't depend on the cursor's position
-        // For actual orbiting around the cursor, additional calculations are needed
+    // //TODO: Needs more work
+    // orbit(cursorPosition) {
+    //     let dx = cursorPosition.x - this.position.x;
+    //     let dy = cursorPosition.y - this.position.y;
+    //     let distance = Math.sqrt(dx * dx + dy * dy);
     
-        // Increase or decrease these to adjust the radius and speed of orbiting
-        const radius = 20;
-        const orbitSpeed = 0.05;
+    //     if (distance < 50) {  // Adjust this radius as needed
+    //         // Define the orbiting behavior
+    //         this.angle = Math.atan2(dy, dx) + Math.PI / 2;  // Adjust for a perpendicular angle
+    //         this.velocity.x = Math.cos(this.angle) * 2;  // Adjust speed if needed
+    //         this.velocity.y = Math.sin(this.angle) * 2;  // Adjust speed if needed
+    //     } else {
+    //         // Attract boid to cursor
+    //         this.velocity.x += dx * 0.05;  // Adjust attraction strength if needed
+    //         this.velocity.y += dy * 0.05;  // Adjust attraction strength if needed
+    //     }
+    // }
     
-        // Calculate a simple circular orbit
-        this.velocity.x = Math.cos(this.angle) * orbitSpeed;
-        this.velocity.y = Math.sin(this.angle) * orbitSpeed;
+    orbit(cursorPosition) {
+        let dx = cursorPosition.x - this.position.x;
+        let dy = cursorPosition.y - this.position.y;
+        let distanceToCursor = Math.sqrt(dx * dx + dy * dy);
     
-        // Update the angle for the next frame
-        this.angle += orbitSpeed;
-    
-        // This is just a basic implementation. To orbit around the cursor,
-        // you would adjust the boid's position relative to the cursor's position
+        // If the boid is within its specific orbit range
+        if (distanceToCursor < this.orbitDistance + 10 && distanceToCursor > this.orbitDistance - 10) {
+            // Orbit around the cursor
+            this.angle = Math.atan2(dy, dx) + Math.PI / 2; // Rotate 90 degrees for orbiting
+            this.velocity.x = Math.cos(this.angle) * 2; // You could vary speed based on orbitDistance
+            this.velocity.y = Math.sin(this.angle) * 2;
+        } else {
+            // Adjust the boid to move towards its designated orbit path
+            let targetX = cursorPosition.x + this.orbitDistance * Math.cos(Math.atan2(dy, dx));
+            let targetY = cursorPosition.y + this.orbitDistance * Math.sin(Math.atan2(dy, dx));
+            this.velocity.x += (targetX - this.position.x) * 0.05; // Adjust these factors
+            this.velocity.y += (targetY - this.position.y) * 0.05;
+        }
     }
     
     
