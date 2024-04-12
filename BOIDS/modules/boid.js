@@ -25,35 +25,36 @@ export class Boid {
         this.velocity = { x: Math.random() * 2 - 1, y: Math.random() * 2 - 1};
         this.color = color;
 
+        this.hue = Math.random() * 360;  // Initialize hue to a random color
+        this.isInteracting = false;  // Flag to indicate cursor interaction
+
         // Assign one of three possible orbit distances
         const orbitDistances = [15, 25, 40]; 
         this.orbitDistance = orbitDistances[Math.floor(Math.random() * orbitDistances.length)];
     }
 
-    //Draws the individual boid
     draw() {
-        ctx.fillStyle = this.color;
+        if (this.isInteracting) {
+            // If the boid is interacting, increment the hue for a rainbow effect
+            this.hue = (this.hue + 1) % 360;  // Cycle through hues
+            this.color = `hsl(${this.hue}, 100%, 50%)`;
+        }
     
+        ctx.fillStyle = this.color;
+        
         // Calculate the angle of rotation based on the velocity vector
         const angle = Math.atan2(this.velocity.y, this.velocity.x);
-    
+        
         ctx.beginPath();
-    
         // Move to the tip/front of the triangle
-        // The front of the triangle is a point in the direction of the velocity, offset by a certain length
         ctx.moveTo(this.position.x + Math.cos(angle) * 10, this.position.y + Math.sin(angle) * 10);
-    
-        // Draw line to the bottom left of the triangle
+        // Draw the sides of the triangle
         ctx.lineTo(this.position.x - Math.cos(angle - Math.PI / 6) * 10, this.position.y - Math.sin(angle - Math.PI / 6) * 10);
-    
-        // Draw line to the bottom right of the triangle
         ctx.lineTo(this.position.x - Math.cos(angle + Math.PI / 6) * 10, this.position.y - Math.sin(angle + Math.PI / 6) * 10);
-    
-        // Connects back to the tip/front of the triangle
-        ctx.closePath(); // Closes the path so the last line is drawn back to the starting point
-    
+        ctx.closePath(); // Connects back to the tip
         ctx.fill();
     }
+    
 
     update(isMouseDown, cursorPosition, cursorVelocity) {
         //Commenting these out since we are working on new feature
@@ -122,8 +123,10 @@ export class Boid {
             // If the cursor is moving, adjust the boid's velocity to match the cursor's
             this.velocity.x = cursorVelocity.x;
             this.velocity.y = cursorVelocity.y;
+            this.isInteracting = true;
         } else {
             // If the cursor is still or moving slowly, orbit around the cursor's position
+            this.isInteracting = false;
             this.orbit(cursorVelocity);
         }
     }
